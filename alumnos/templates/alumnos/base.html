@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Instituto Superior del Milagro{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'alumnos/css/estilo.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    {# ── ENCABEZADO ── #}
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="header-brand">
+                <span class="header-sigla">IS<span>DeM</span></span>
+                <div class="header-text">
+                    <span class="header-titulo">Instituto Superior del Milagro</span>
+                    <span class="header-subtitulo">Taller de Programación · Proyecto Instituto</span>
+                </div>
+            </div>
+            <nav class="site-nav">
+                <a href="{% url 'alumnos:lista' %}" class="nav-link"> 👤 Alumnos</a>
+                <a href="{% url 'materias:lista' %}" class="nav-link">📋 Materias</a>
+                <a href="/admin/" class="nav-link">⚙ Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    {# ── MENSAJES FLASH ── #}
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {# ── CONTENIDO PRINCIPAL ── #}
+    <main class="site-main">
+        {% block contenido %}{% endblock %}
+    </main>
+
+    {# ── PIE DE PÁGINA ── #}
+    <footer class="site-footer">
+        <p>Instituto Superior del Milagro (ISDEM Nº 8207) &nbsp;·&nbsp;
+           Tecnicatura Superior en Análisis de Sistemas de Computación &nbsp;·&nbsp;
+           Taller de Programación &nbsp;·&nbsp; Año Lectivo 2026</p>
+        <p>Prof. Lic. Adrián Aguirre</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

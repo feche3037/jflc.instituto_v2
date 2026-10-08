@@ -1,0 +1,29 @@
+# ============================================================
+# .gitignore — Archivos que NUNCA deben subirse al repositorio
+# Taller de Programación · ISDEM 2026
+# ============================================================
+
+# Variables de entorno (contiene SECRET_KEY y configuración sensible)
+.env
+
+# Base de datos local
+db.sqlite3
+
+# Entorno virtual de Python
+entorno_instituto/
+venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos del editor / sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Archivos estáticos recolectados (producción)
+staticfiles/

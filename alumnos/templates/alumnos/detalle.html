@@ -1,0 +1,59 @@
+{% extends 'alumnos/base.html' %}
+
+{% block title %}{{ alumno.nombre_completo }} · ISDEM{% endblock %}
+
+{% block contenido %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">👤 Detalle del alumno</h1>
+        <p class="page-subtitle">Legajo {{ alumno.legajo }}</p>
+    </div>
+    <div class="btn-group">
+        <a href="{% url 'alumnos:editar' alumno.legajo %}" class="btn btn-warning">✏ Editar</a>
+        <a href="{% url 'alumnos:baja'   alumno.legajo %}" class="btn btn-danger">🗑 Eliminar</a>
+        <a href="{% url 'alumnos:lista' %}" class="btn btn-secondary">← Volver al listado</a>
+    </div>
+</div>
+
+<div class="detail-card">
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Nombre completo</span>
+            <span class="detail-value">{{ alumno.apellido }}, {{ alumno.nombre }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Legajo</span>
+            <span class="detail-value">{{ alumno.legajo }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Correo electrónico</span>
+            <span class="detail-value"><a href="mailto:{{ alumno.email }}">{{ alumno.email }}</a></span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Estado</span>
+            <span class="detail-value">
+                {% if alumno.activo %}
+                    <span class="badge badge-activo">✅ Activo</span>
+                {% else %}
+                    <span class="badge badge-inactivo">❌ Inactivo</span>
+                {% endif %}
+            </span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Fecha de alta</span>
+            <span class="detail-value">{{ alumno.fecha_alta|date:"d \d\e F \d\e Y" }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Hora de alta</span>
+            <span class="detail-value">{{ alumno.fecha_alta|date:"H:i" }} hs</span>
+        </div>
+    </div>
+</div>
+
+<div class="callout-api">
+    <span>🔌 También disponible vía API:</span>
+    <a href="/api/alumnos/{{ alumno.legajo }}/" target="_blank">/api/alumnos/{{ alumno.legajo }}/</a>
+</div>
+
+{% endblock %}

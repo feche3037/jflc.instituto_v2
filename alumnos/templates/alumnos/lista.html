@@ -1,0 +1,109 @@
+{% extends 'alumnos/base.html' %}
+
+{% block title %}Listado de alumnos · ISDEM{% endblock %}
+
+{% block contenido %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">📋 Listado de alumnos</h1>
+        <p class="page-subtitle">{{ cantidad }} alumno{{ cantidad|pluralize }} encontrado{{ cantidad|pluralize }}</p>
+    </div>
+    <div class="page-header">   
+        <a href="{% url 'alumnos:alta' %}" class="btn btn-primary">＋ Nuevo alumno</a>
+        <a href="/api/alumnos/" class="btn btn-secondary">🔌 API REST</a>
+    </div>
+</div>
+
+{# ── ESTADÍSTICAS (Clase 4 — aggregate) ── #}
+<div class="stats-bar">
+    <div class="stat-item">
+        <span class="stat-num">{{ estadisticas.total }}</span>
+        <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-item stat-activo">
+        <span class="stat-num">{{ estadisticas.activos }}</span>
+        <span class="stat-label">Activos</span>
+    </div>
+    <div class="stat-item stat-inactivo">
+        <span class="stat-num">{{ estadisticas.inactivos }}</span>
+        <span class="stat-label">Inactivos</span>
+    </div>
+</div>
+
+{# ── BUSCADOR (Clase 4 — Q Objects) ── #}
+<form method="get" class="search-form">
+    <input
+        type="text"
+        name="q"
+        value="{{ termino }}"
+        placeholder="Buscar por nombre, apellido o email..."
+        class="search-input"
+    >
+    <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+    {% if termino %}
+        <a href="{% url 'alumnos:lista' %}" class="btn btn-secondary">✕ Limpiar</a>
+    {% endif %}
+</form>
+
+{% if termino %}
+    <p class="search-result-msg">
+        Resultados para "<strong>{{ termino }}</strong>": {{ cantidad }} alumno{{ cantidad|pluralize }}
+    </p>
+{% endif %}
+
+{% if alumnos %}
+    <div class="table-wrapper">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Legajo</th>
+                    <th>Apellido y nombre</th>
+                    <th>Email</th>
+                    <th>Estado</th>
+                    <th>Fecha de alta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                <tr>
+                    <td><strong>{{ alumno.legajo }}</strong></td>
+                    <td>{{ alumno.apellido }}, {{ alumno.nombre }}</td>
+                    <td>{{ alumno.email }}</td>
+                    <td>
+                        {% if alumno.activo %}
+                            <span class="badge badge-activo">Activo</span>
+                        {% else %}
+                            <span class="badge badge-inactivo">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ alumno.fecha_alta|date:"d/m/Y" }}</td>
+                    <td class="acciones">
+                        <a href="{% url 'alumnos:detalle' alumno.legajo %}" class="btn btn-sm btn-info">👁 Ver</a>
+                        <a href="{% url 'alumnos:editar' alumno.legajo %}" class="btn btn-sm btn-warning">✏ Editar</a>
+                        <a href="{% url 'alumnos:baja'   alumno.legajo %}" class="btn btn-sm btn-danger">🗑 Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p class="empty-icon">👩‍🎓</p>
+        <h2>
+            {% if termino %}
+                No se encontraron alumnos para "{{ termino }}"
+            {% else %}
+                No hay alumnos registrados todavía
+            {% endif %}
+        </h2>
+        <p>{% if not termino %}¡Agregá el primero usando el botón de arriba!{% endif %}</p>
+        {% if not termino %}
+            <a href="{% url 'alumnos:alta' %}" class="btn btn-primary">＋ Dar de alta el primer alumno</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% endblock %}

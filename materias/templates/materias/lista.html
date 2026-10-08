@@ -1,0 +1,85 @@
+{% extends 'alumnos/base.html' %}
+
+{% block title %}Listado de materias · ISDEM{% endblock %}
+
+{% block contenido %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">📋 Listado de materias</h1>
+        <p class="page-subtitle">{{ cantidad }} materia {{ cantidad|pluralize }} encontrado{{ cantidad|pluralize }}</p>
+    </div>
+    <div class="page-header">   
+        <a href="{% url 'materias:alta' %}" class="btn btn-primary">＋ Nueva materia</a>
+        <a href="/api/alumnos/" class="btn btn-secondary">🔌 API REST</a>
+    </div>
+</div>
+
+
+{# ── BUSCADOR (Clase 4 — Q Objects) ── #}
+<form method="get" class="search-form">
+    <input
+        type="text"
+        name="q"
+        value="{{ termino }}"
+        placeholder="Buscar por nombre, codigo o descripcion..."
+        class="search-input"
+    >
+    <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+    {% if termino %}
+        <a href="{% url 'materias:lista' %}" class="btn btn-secondary">✕ Limpiar</a>
+    {% endif %}
+</form>
+
+{% if termino %}
+    <p class="search-result-msg">
+        Resultados para "<strong>{{ termino }}</strong>": {{ cantidad }} materia{{ cantidad|pluralize }}
+    </p>
+{% endif %}
+
+{% if materias %}
+    <div class="table-wrapper">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>codigo</th>
+                    <th>nombre</th>
+                    <th>descripcion</th>
+                    <!-- <th>Estado</th> -->
+                    <!-- <th>Fecha de alta</th> -->
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for materia in materias %}
+                <tr>
+                    <td><strong>{{ materia.codigo }}</strong></td>
+                    <td>{{ materia.nombre }}</td>
+                    <td>{{ materia.descripcion}}</td>
+                    <td class="acciones">
+                        <a href="{% url 'materias:editar' materia.codigo %}" class="btn btn-sm btn-warning">✏ Editar</a>
+                        <a href="{% url 'materias:baja'   materia.codigo %}" class="btn btn-sm btn-danger">🗑 Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p class="empty-icon">👩‍🎓</p>
+        <h2>
+            {% if termino %}
+                No se encontraron materias para "{{ termino }}"
+            {% else %}
+                No hay materias registrados todavía
+            {% endif %}
+        </h2>
+        <p>{% if not termino %}¡Agregá el primero usando el botón de arriba!{% endif %}</p>
+        {% if not termino %}
+            <a href="{% url 'materias:alta' %}" class="btn btn-primary">＋ Dar de alta el primer materia</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% endblock %}
