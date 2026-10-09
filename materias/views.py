@@ -25,9 +25,9 @@ def lista_materias(request):
             Q(nombre__icontains=termino)
             | Q(codigo__icontains=termino)
             | Q(descripcion__icontains=termino)
-        )
+        ).order_by("codigo")
     else:
-        materias = Materia.objects.all()
+        materias = Materia.objects.all().order_by("codigo")
 
     contexto = {
         "materias": materias,

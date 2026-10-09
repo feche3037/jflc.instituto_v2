@@ -9,19 +9,19 @@ CRUD completo más las funcionalidades de la Clase 4:
   - baja_alumno    → DELETE (protegida con @login_required)
 """
 
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Count
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Alumno
 from .forms import AlumnoForm
-
+from .models import Alumno
 
 # ─────────────────────────────────────────────────────────────
 # LISTADO — READ (todos) + buscador (Q Objects) + estadísticas (aggregate)
 # URL: /alumnos/   name='lista'
 # ─────────────────────────────────────────────────────────────
+
 
 def lista_alumnos(request):
     """
@@ -33,41 +33,42 @@ def lista_alumnos(request):
       - Estadísticas con aggregate(): total, activos e inactivos,
         calculadas en una sola consulta a la base de datos.
     """
-    termino = request.GET.get('q', '').strip()
+    termino = request.GET.get("q", "").strip()
 
     if termino:
         # Q Objects: el | (pipe) combina las condiciones con OR.
         # Sin Q Objects, filter() solo permite combinar con AND.
         alumnos = Alumno.objects.filter(
-            Q(nombre__icontains=termino) |
-            Q(apellido__icontains=termino) |
-            Q(email__icontains=termino)
-        )
+            Q(nombre__icontains=termino)
+            | Q(apellido__icontains=termino)
+            | Q(email__icontains=termino)
+        ).order_by("legajo")
     else:
-        alumnos = Alumno.objects.all()
+        alumnos = Alumno.objects.all().order_by("legajo")
 
     # aggregate(): calcula varios valores en una sola consulta SQL,
     # sin necesidad de traer todos los registros a Python.
     estadisticas = Alumno.objects.aggregate(
-        total=Count('id'),
-        activos=Count('id', filter=Q(activo=True)),
-        inactivos=Count('id', filter=Q(activo=False)),
+        total=Count("id"),
+        activos=Count("id", filter=Q(activo=True)),
+        inactivos=Count("id", filter=Q(activo=False)),
     )
 
     contexto = {
-        'alumnos':       alumnos,
-        'cantidad':      alumnos.count(),
-        'termino':       termino,
-        'estadisticas':  estadisticas,
-        'titulo':        'Listado de alumnos',
+        "alumnos": alumnos,
+        "cantidad": alumnos.count(),
+        "termino": termino,
+        "estadisticas": estadisticas,
+        "titulo": "Listado de alumnos",
     }
-    return render(request, 'alumnos/lista.html', contexto)
+    return render(request, "alumnos/lista.html", contexto)
 
 
 # ─────────────────────────────────────────────────────────────
 # DETALLE — READ (un alumno)
 # URL: /alumnos/<int:legajo>/   name='detalle'
 # ─────────────────────────────────────────────────────────────
+
 
 def detalle_alumno(request, legajo):
     """
@@ -76,11 +77,15 @@ def detalle_alumno(request, legajo):
     get_object_or_404 devuelve una página 404 amigable si no existe.
     """
     alumno = get_object_or_404(Alumno, legajo=legajo)
-    inscripciones = alumno.inscripciones.select_related('materia')
-    return render(request, 'alumnos/detalle.html', {
-        'alumno':        alumno,
-        'inscripciones': inscripciones,
-    })
+    inscripciones = alumno.inscripciones.select_related("materia")
+    return render(
+        request,
+        "alumnos/detalle.html",
+        {
+            "alumno": alumno,
+            "inscripciones": inscripciones,
+        },
+    )
 
 
 # ─────────────────────────────────────────────────────────────
@@ -88,6 +93,7 @@ def detalle_alumno(request, legajo):
 # URL: /alumnos/nuevo/   name='alta'
 # Protegida: solo usuarios logueados pueden dar de alta (Clase 4 — Seguridad)
 # ─────────────────────────────────────────────────────────────
+
 
 @login_required
 def alta_alumno(request):
@@ -101,27 +107,31 @@ def alta_alumno(request):
     @login_required: si el usuario no está logueado, Django lo
     redirige automáticamente a LOGIN_URL (configurado en settings.py).
     """
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AlumnoForm(request.POST)
 
         if form.is_valid():
             alumno = form.save()
             messages.success(
                 request,
-                f'✅ Alumno {alumno.nombre_completo()} dado de alta correctamente.'
+                f"✅ Alumno {alumno.nombre_completo()} dado de alta correctamente.",
             )
-            return redirect('alumnos:lista')
+            return redirect("alumnos:lista")
 
-        messages.error(request, '⚠ Corregí los errores indicados.')
+        messages.error(request, "⚠ Corregí los errores indicados.")
 
     else:
         form = AlumnoForm()
 
-    return render(request, 'alumnos/form.html', {
-        'form':   form,
-        'titulo': 'Dar de alta un alumno',
-        'accion': 'Guardar alumno',
-    })
+    return render(
+        request,
+        "alumnos/form.html",
+        {
+            "form": form,
+            "titulo": "Dar de alta un alumno",
+            "accion": "Guardar alumno",
+        },
+    )
 
 
 # ─────────────────────────────────────────────────────────────
@@ -129,6 +139,7 @@ def alta_alumno(request):
 # URL: /alumnos/<int:legajo>/editar/   name='editar'
 # Protegida: solo usuarios logueados pueden editar (Clase 4 — Seguridad)
 # ─────────────────────────────────────────────────────────────
+
 
 @login_required
 def editar_alumno(request, legajo):
@@ -138,7 +149,7 @@ def editar_alumno(request, legajo):
     """
     alumno = get_object_or_404(Alumno, legajo=legajo)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         # instance=alumno: le decimos al formulario que está editando
         # un registro existente, no creando uno nuevo.
         form = AlumnoForm(request.POST, instance=alumno)
@@ -147,21 +158,25 @@ def editar_alumno(request, legajo):
             form.save()
             messages.success(
                 request,
-                f'✅ Datos de {alumno.nombre_completo()} actualizados correctamente.'
+                f"✅ Datos de {alumno.nombre_completo()} actualizados correctamente.",
             )
-            return redirect('alumnos:detalle', legajo=alumno.legajo)
+            return redirect("alumnos:detalle", legajo=alumno.legajo)
 
-        messages.error(request, '⚠ Corregí los errores indicados.')
+        messages.error(request, "⚠ Corregí los errores indicados.")
 
     else:
         form = AlumnoForm(instance=alumno)
 
-    return render(request, 'alumnos/form.html', {
-        'form':   form,
-        'alumno': alumno,
-        'titulo': f'Editar alumno: {alumno.nombre_completo()}',
-        'accion': 'Guardar cambios',
-    })
+    return render(
+        request,
+        "alumnos/form.html",
+        {
+            "form": form,
+            "alumno": alumno,
+            "titulo": f"Editar alumno: {alumno.nombre_completo()}",
+            "accion": "Guardar cambios",
+        },
+    )
 
 
 # ─────────────────────────────────────────────────────────────
@@ -169,6 +184,7 @@ def editar_alumno(request, legajo):
 # URL: /alumnos/<int:legajo>/eliminar/   name='baja'
 # Protegida: solo usuarios logueados pueden eliminar (Clase 4 — Seguridad)
 # ─────────────────────────────────────────────────────────────
+
 
 @login_required
 def baja_alumno(request, legajo):
@@ -179,10 +195,10 @@ def baja_alumno(request, legajo):
     """
     alumno = get_object_or_404(Alumno, legajo=legajo)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         nombre = alumno.nombre_completo()
         alumno.delete()
-        messages.success(request, f'🗑 Alumno {nombre} eliminado correctamente.')
-        return redirect('alumnos:lista')
+        messages.success(request, f"🗑 Alumno {nombre} eliminado correctamente.")
+        return redirect("alumnos:lista")
 
-    return render(request, 'alumnos/confirmar_baja.html', {'alumno': alumno})
+    return render(request, "alumnos/confirmar_baja.html", {"alumno": alumno})

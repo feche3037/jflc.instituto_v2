@@ -52,7 +52,7 @@
                 <tr>
                     <td><strong>{{ materia.codigo }}</strong></td>
                     <td>{{ materia.nombre }}</td>
-                    <td>{{ materia.descripcion|truncatechars:60 }}</td>
+                    <td>{{ materia.descripcion|truncatechars:50 }}</td>
                     <td class="acciones">
                         <a href="{% url 'materias:detalle' materia.codigo %}" class="btn btn-sm btn-info">👁 Ver</a>
                         <a href="{% url 'materias:editar' materia.codigo %}" class="btn btn-sm btn-warning">✏ Editar</a>
