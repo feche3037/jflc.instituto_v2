@@ -1,0 +1,36 @@
+{% extends 'alumnos/base.html' %}
+
+{% block title %}{{ materia.nombre }} · ISDEM{% endblock %}
+
+{% block contenido %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">📋 Detalle de la materia</h1>
+        <p class="page-subtitle">Código {{ materia.codigo }}</p>
+    </div>
+    <div class="btn-group">
+        <a href="{% url 'materias:editar' materia.codigo %}" class="btn btn-warning">✏ Editar</a>
+        <a href="{% url 'materias:baja'   materia.codigo %}" class="btn btn-danger">🗑 Eliminar</a>
+        <a href="{% url 'materias:lista' %}" class="btn btn-secondary">← Volver al listado</a>
+    </div>
+</div>
+
+<div class="detail-card">
+    <div class="detail-grid">
+        <div class="detail-item">
+            <span class="detail-label">Nombre</span>
+            <span class="detail-value">{{ materia.nombre }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Código</span>
+            <span class="detail-value">{{ materia.codigo }}</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">Descripción</span>
+            <span class="detail-value">{{ materia.descripcion|default:"—" }}</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

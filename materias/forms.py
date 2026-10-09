@@ -1,5 +1,5 @@
 """
-forms.py — Formularios de la app alumnos.
+forms.py — Formularios de la app materias.
 
 ModelForm genera automáticamente los campos del formulario a partir
 del modelo, incluyendo todas las validaciones definidas en él
@@ -12,10 +12,10 @@ from .models import Materia
 
 class MateriaForm(forms.ModelForm):
     """
-    Formulario para crear y editar alumnos.
+    Formulario para crear y editar materias.
 
-    Se usa tanto en la vista alta_alumno (POST con instance=None)
-    como en editar_alumno (POST con instance=alumno_existente).
+    Se usa tanto en la vista alta_materia (POST con instance=None)
+    como en editar_materia (POST con instance=materia_existente).
     Django detecta automáticamente si debe hacer INSERT o UPDATE.
     """
 
@@ -25,37 +25,25 @@ class MateriaForm(forms.ModelForm):
 
         labels = {
             'nombre': 'Nombre',
-            'codigo': 'Codigo',
-            'descripcion':    'Descripcion de la Materia',
+            'codigo': 'Código',
+            'descripcion': 'Descripción de la materia',
         }
 
         help_texts = {
-            'codigo': 'Número entero único. Ej: 1001',
+            'codigo': 'Código único de la materia. Ej: 1001',
         }
 
         widgets = {
             'nombre': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ej: Ana',
+                'placeholder': 'Ej: Programación I',
             }),
             'codigo': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ej: 1001',
             }),
             'descripcion': forms.TextInput(attrs={
-                'class': 'form-control input-lg',
-                'placeholder': 'Ingresa una descripcion',
-                'autocomplete': 'off'
+                'class': 'form-control',
+                'placeholder': 'Ingresá una descripción',
             }),
         }
-    # def clean_legajo(self):
-    #     """
-    #     Validación personalizada del campo legajo.
-    #     Se ejecuta automáticamente cuando se llama a form.is_valid().
-    #     """
-    #     legajo = self.cleaned_data.get('legajo')
-    #     if legajo is not None and legajo < 1:
-    #         raise forms.ValidationError(
-    #             'El legajo debe ser un número entero positivo (mayor a 0).'
-    #         )
-    #     return legajo

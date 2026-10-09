@@ -38,7 +38,11 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">✔ {{ accion }}</button>
-            <a href="{% url 'materias:lista' %}" class="btn btn-secondary">Cancelar</a>
+            {% if materia %}
+                <a href="{% url 'materias:detalle' materia.codigo %}" class="btn btn-secondary">Cancelar</a>
+            {% else %}
+                <a href="{% url 'materias:lista' %}" class="btn btn-secondary">Cancelar</a>
+            {% endif %}
         </div>
     </form>
 </div>

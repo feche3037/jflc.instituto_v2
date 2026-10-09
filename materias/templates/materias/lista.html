@@ -7,22 +7,21 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">📋 Listado de materias</h1>
-        <p class="page-subtitle">{{ cantidad }} materia {{ cantidad|pluralize }} encontrado{{ cantidad|pluralize }}</p>
+        <p class="page-subtitle">{{ cantidad }} materia{{ cantidad|pluralize }} encontrada{{ cantidad|pluralize }}</p>
     </div>
     <div class="page-header">   
         <a href="{% url 'materias:alta' %}" class="btn btn-primary">＋ Nueva materia</a>
-        <a href="/api/alumnos/" class="btn btn-secondary">🔌 API REST</a>
     </div>
 </div>
 
 
-{# ── BUSCADOR (Clase 4 — Q Objects) ── #}
+{# ── BUSCADOR (Q Objects) ── #}
 <form method="get" class="search-form">
     <input
         type="text"
         name="q"
         value="{{ termino }}"
-        placeholder="Buscar por nombre, codigo o descripcion..."
+        placeholder="Buscar por nombre, código o descripción..."
         class="search-input"
     >
     <button type="submit" class="btn btn-primary">🔍 Buscar</button>
@@ -42,11 +41,9 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>codigo</th>
-                    <th>nombre</th>
-                    <th>descripcion</th>
-                    <!-- <th>Estado</th> -->
-                    <!-- <th>Fecha de alta</th> -->
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -55,8 +52,9 @@
                 <tr>
                     <td><strong>{{ materia.codigo }}</strong></td>
                     <td>{{ materia.nombre }}</td>
-                    <td>{{ materia.descripcion}}</td>
+                    <td>{{ materia.descripcion|truncatechars:60 }}</td>
                     <td class="acciones">
+                        <a href="{% url 'materias:detalle' materia.codigo %}" class="btn btn-sm btn-info">👁 Ver</a>
                         <a href="{% url 'materias:editar' materia.codigo %}" class="btn btn-sm btn-warning">✏ Editar</a>
                         <a href="{% url 'materias:baja'   materia.codigo %}" class="btn btn-sm btn-danger">🗑 Eliminar</a>
                     </td>
@@ -67,17 +65,17 @@
     </div>
 {% else %}
     <div class="empty-state">
-        <p class="empty-icon">👩‍🎓</p>
+        <p class="empty-icon">📚</p>
         <h2>
             {% if termino %}
                 No se encontraron materias para "{{ termino }}"
             {% else %}
-                No hay materias registrados todavía
+                No hay materias registradas todavía
             {% endif %}
         </h2>
-        <p>{% if not termino %}¡Agregá el primero usando el botón de arriba!{% endif %}</p>
+        <p>{% if not termino %}¡Agregá la primera usando el botón de arriba!{% endif %}</p>
         {% if not termino %}
-            <a href="{% url 'materias:alta' %}" class="btn btn-primary">＋ Dar de alta el primer materia</a>
+            <a href="{% url 'materias:alta' %}" class="btn btn-primary">＋ Dar de alta la primera materia</a>
         {% endif %}
     </div>
 {% endif %}

@@ -5,11 +5,9 @@ from django.contrib import admin
 from .models import Materia
 
 @admin.register(Materia)
-class AlumnoAdmin(admin.ModelAdmin):
-    """Personalización de la vista del modelo Alumno en el admin."""
+class MateriaAdmin(admin.ModelAdmin):
+    """Personalización de la vista del modelo Materia en el admin."""
 
     list_display = ('nombre', 'codigo', 'descripcion')
     search_fields = ('nombre', 'codigo')
-    list_filter = ('nombre', 'codigo')
-    #readonly_fields = ('fecha_alta',)
     ordering = ('nombre', 'codigo')

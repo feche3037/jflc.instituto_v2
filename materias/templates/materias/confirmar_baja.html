@@ -10,16 +10,16 @@
 
 <div class="confirm-card">
     <div class="confirm-icon">⚠️</div>
-    <h2 class="confirm-title">¿Estás seguro de que querés eliminar este materia?</h2>
+    <h2 class="confirm-title">¿Estás seguro de que querés eliminar esta materia?</h2>
     <p class="confirm-msg">Esta acción <strong>no se puede deshacer</strong>.
-       El registro de <strong>{{ materia.nombre}}</strong>
-       (codigo {{ materia.codigo }}) será eliminado permanentemente de la base de datos.</p>
+       El registro de <strong>{{ materia.nombre }}</strong>
+       (código {{ materia.codigo }}) será eliminado permanentemente de la base de datos.</p>
 
     <form method="post">
         {% csrf_token %}
         <div class="confirm-actions">
             <button type="submit" class="btn btn-danger">🗑 Sí, eliminar definitivamente</button>
-            <a href="{% url 'materias:lista'% }" class="btn btn-secondary">Cancelar</a>
+            <a href="{% url 'materias:detalle' materia.codigo %}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
