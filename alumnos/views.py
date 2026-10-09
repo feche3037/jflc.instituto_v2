@@ -71,11 +71,16 @@ def lista_alumnos(request):
 
 def detalle_alumno(request, legajo):
     """
-    Muestra todos los datos de un alumno identificado por su legajo.
+    Muestra todos los datos de un alumno identificado por su legajo,
+    junto con las materias en las que está inscripto.
     get_object_or_404 devuelve una página 404 amigable si no existe.
     """
     alumno = get_object_or_404(Alumno, legajo=legajo)
-    return render(request, 'alumnos/detalle.html', {'alumno': alumno})
+    inscripciones = alumno.inscripciones.select_related('materia')
+    return render(request, 'alumnos/detalle.html', {
+        'alumno':        alumno,
+        'inscripciones': inscripciones,
+    })
 
 
 # ─────────────────────────────────────────────────────────────

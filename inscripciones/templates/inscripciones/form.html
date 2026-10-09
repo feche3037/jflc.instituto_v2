@@ -1,0 +1,46 @@
+{% extends 'alumnos/base.html' %}
+
+{% block title %}{{ titulo }} · ISDEM{% endblock %}
+
+{% block contenido %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            ＋
+            {{ titulo }}
+        </h1>
+    </div>
+    <a href="{% url 'inscripciones:lista' %}" class="btn btn-secondary">← Volver al listado</a>
+</div>
+
+<div class="form-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% for campo in form %}
+        <div class="form-group {% if campo.errors %}has-error{% endif %}">
+            <label for="{{ campo.id_for_label }}" class="form-label">
+                {{ campo.label }}
+                {% if campo.field.required %}<span class="required">*</span>{% endif %}
+            </label>
+            {{ campo }}
+            {% if campo.help_text %}
+                <small class="form-help">{{ campo.help_text }}</small>
+            {% endif %}
+            {% if campo.errors %}
+                {% for error in campo.errors %}
+                    <span class="form-error">⚠ {{ error }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">✔ {{ accion }}</button>
+            <a href="{% url 'inscripciones:lista' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
