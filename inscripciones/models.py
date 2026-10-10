@@ -19,5 +19,5 @@ class Inscripcion(models.Model):
     class Meta:
         # Evita que un alumno se inscriba dos veces a la misma materia
         unique_together = ('alumno', 'materia')
-    def str(self):
+    def __str__(self):
         return f"{self.alumno} en {self.materia} ({self.estado})"

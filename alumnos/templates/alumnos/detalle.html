@@ -51,6 +51,42 @@
     </div>
 </div>
 
+<div class="page-header">
+    <h2 class="page-title">📚 Materias inscriptas</h2>
+    <a href="{% url 'inscripciones:alta' %}?alumno={{ alumno.pk }}" class="btn btn-primary">＋ Inscribir</a>
+</div>
+
+{% if inscripciones %}
+    <div class="table-wrapper">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Materia</th>
+                    <th>Estado</th>
+                    <th>Nota final</th>
+                    <th>Fecha de inscripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscripcion in inscripciones %}
+                <tr>
+                    <td><strong>{{ inscripcion.materia.codigo }}</strong></td>
+                    <td><a href="{% url 'materias:detalle' inscripcion.materia.codigo %}">{{ inscripcion.materia.nombre }}</a></td>
+                    <td>{{ inscripcion.get_estado_display }}</td>
+                    <td>{{ inscripcion.nota_final|default:"—" }}</td>
+                    <td>{{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>El alumno no está inscripto en ninguna materia.</p>
+    </div>
+{% endif %}
+
 <div class="callout-api">
     <span>🔌 También disponible vía API:</span>
     <a href="/api/alumnos/{{ alumno.legajo }}/" target="_blank">/api/alumnos/{{ alumno.legajo }}/</a>

@@ -1,0 +1,48 @@
+{% extends 'alumnos/base.html' %}
+
+{% block title %}Inscripciones · ISDEM{% endblock %}
+
+{% block contenido %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">📝 Inscripciones</h1>
+        <p class="page-subtitle">{{ cantidad }} inscripción{{ cantidad|pluralize:"es" }} registrada{{ cantidad|pluralize }}</p>
+    </div>
+    <a href="{% url 'inscripciones:alta' %}" class="btn btn-primary">＋ Nueva inscripción</a>
+</div>
+
+{% if inscripciones %}
+    <div class="table-wrapper">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Alumno</th>
+                    <th>Materia</th>
+                    <th>Estado</th>
+                    <th>Nota final</th>
+                    <th>Fecha de inscripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscripcion in inscripciones %}
+                <tr>
+                    <td><a href="{% url 'alumnos:detalle' inscripcion.alumno.legajo %}">{{ inscripcion.alumno.apellido }}, {{ inscripcion.alumno.nombre }}</a></td>
+                    <td><a href="{% url 'materias:detalle' inscripcion.materia.codigo %}">{{ inscripcion.materia }}</a></td>
+                    <td>{{ inscripcion.get_estado_display }}</td>
+                    <td>{{ inscripcion.nota_final|default:"—" }}</td>
+                    <td>{{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p class="empty-icon">📝</p>
+        <h2>No hay inscripciones registradas todavía</h2>
+        <a href="{% url 'inscripciones:alta' %}" class="btn btn-primary">＋ Crear la primera inscripción</a>
+    </div>
+{% endif %}
+
+{% endblock %}

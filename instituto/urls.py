@@ -17,7 +17,8 @@ urlpatterns = [
 
     # Sitio web HTML — vistas tradicionales con render()
     path('alumnos/', include('alumnos.urls')),
-    path('materias/', include('materias.urls')), 
+    path('materias/', include('materias.urls')),
+    path('inscripciones/', include('inscripciones.urls')),
 
     # API REST — Clase 4, devuelve JSON en lugar de HTML
     path('api/', include('alumnos.api_urls')),
